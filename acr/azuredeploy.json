@@ -1,0 +1,50 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "acrName": {
+            "type": "string",
+            "minLength": 5,
+            "maxLength": 50,
+            "metadata": {
+                "description": "Name of your azure container registry (must be unique)"
+            }
+        },
+        "acrSkuName": {
+            "type": "string",
+            "defaultValue": "Basic",
+            "metadata": {
+                "description": "Tier of your azure container registry"
+            },
+            "allowedValues": [
+                "Basic",
+                "Standard",
+                "Premium"
+            ]
+        },
+        "acrAdminUserEnabled": {
+            "type": "bool",
+            "defaultValue": false,
+            "metadata": {
+                "description": "Enable an admin user that has push/pull permission to the registry."
+            }
+        }
+    },
+    "functions": [],
+    "variables": {},
+    "resources": [
+        {
+            "name": "[parameters('acrName')]",
+            "type": "Microsoft.ContainerRegistry/registries",
+            "apiVersion": "2023-01-01-preview",
+            "location": "[resourceGroup().location]",
+            "sku": {
+                "name": "[parameters('acrSkuName')]"
+            },
+            "properties": {
+                "adminUserEnabled": "[parameters('acrAdminUserEnabled')]"
+            }
+        }
+    ],
+    "outputs": {}
+}
