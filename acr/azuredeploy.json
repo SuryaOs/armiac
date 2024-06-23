@@ -28,6 +28,18 @@
             "metadata": {
                 "description": "Enable an admin user that has push/pull permission to the registry."
             }
+        },
+        "sbNamespaceName": {
+            "type": "string",
+            "metadata": {
+                "description": "Name of your azure service bus (must be unique)"
+            }
+        },
+        "serviceBusQueueName": {
+            "type": "string",
+            "metadata": {
+                "description": "Name of your azure service bus queue (must be unique)"
+            }
         }
     },
     "functions": [],
@@ -43,6 +55,37 @@
             },
             "properties": {
                 "adminUserEnabled": "[parameters('acrAdminUserEnabled')]"
+            }
+        },
+        {
+            "name": "[parameters('sbNamespaceName')]",
+            "type": "Microsoft.ServiceBus/namespaces",
+            "apiVersion": "2021-11-01",
+            "location": "[resourceGroup().location]",
+            "sku": {
+                "name": "Standard"
+            },
+            "properties": {}
+        },
+        {
+            "name": "[format('{0}/{1}', parameters('sbNamespaceName'), parameters('serviceBusQueueName'))]",
+            "type": "Microsoft.ServiceBus/namespaces/queues",
+            "apiVersion": "2021-11-01",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('sbNamespaceName'))]"
+            ],
+            "properties": {
+                "lockDuration": "PT5M",
+                "maxSizeInMegabytes": 1024,
+                "requiresDuplicateDetection": false,
+                "requiresSession": false,
+                "defaultMessageTimeToLive": "P14D",
+                "deadLetteringOnMessageExpiration": false,
+                "duplicateDetectionHistoryTimeWindow": "PT10M",
+                "maxDeliveryCount": 10,
+                "autoDeleteOnIdle": "P3D",
+                "enablePartitioning": false,
+                "enableExpress": false
             }
         }
     ],

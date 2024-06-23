@@ -10,6 +10,12 @@
         },
         "acrAdminUserEnabled": {
             "value": "#arm_acrAdminUserEnabled#"
+        },
+        "sbNamespaceName": {
+            "value": "#arm_sbNamespaceName#"
+        },
+        "serviceBusQueueName": {
+            "value": "#arm_sbQueueName#"
         }
     }
 }
